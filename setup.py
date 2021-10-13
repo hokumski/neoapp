@@ -16,7 +16,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests',
-        'base58',
-        'ecdsa'
+        'python-dateutil',
+        'cryptography',
+        'pyjwt'
     ]
 )
