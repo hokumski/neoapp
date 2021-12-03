@@ -84,8 +84,8 @@ class Neoapp:
                                 and isinstance(cert.get('x5c'), list):
                             x5c = cert['x5c'][0]
                             cert_text = b"-----BEGIN CERTIFICATE-----\n" + \
-                                       bytes(x5c, encoding='ascii') + \
-                                       b"\n-----END CERTIFICATE-----"
+                                        bytes(x5c, encoding='ascii') + \
+                                        b"\n-----END CERTIFICATE-----"
                             with open(Neoapp.local_cert_filename(self, issuer), 'wb') as f:
                                 f.write(cert_text)
                             return cert_text
