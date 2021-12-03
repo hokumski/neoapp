@@ -77,11 +77,18 @@ class Neoapp:
             issuer_config = requests.get(issuer + '/.well-known/openid-configuration').json()
             if 'jwks_uri' in issuer_config:
                 certs_json = requests.get(issuer_config.get('jwks_uri')).json()
-                x5c = certs_json['keys'][0]['x5c'][0]
-                cert = b"-----BEGIN CERTIFICATE-----\n" + bytes(x5c, encoding='ascii') + b"\n-----END CERTIFICATE-----"
-                with open(Neoapp.local_cert_filename(self, issuer), 'wb') as f:
-                    f.write(cert)
-                return cert
+                if isinstance(certs_json.get('keys'), list):
+                    for cert in certs_json.get('keys'):
+                        if cert.get('alg') == 'RS256' \
+                                and cert.get('use') == 'sig' \
+                                and isinstance(cert.get('x5c'), list):
+                            x5c = cert['x5c'][0]
+                            cert_text = b"-----BEGIN CERTIFICATE-----\n" + \
+                                       bytes(x5c, encoding='ascii') + \
+                                       b"\n-----END CERTIFICATE-----"
+                            with open(Neoapp.local_cert_filename(self, issuer), 'wb') as f:
+                                f.write(cert_text)
+                            return cert_text
         except:  # everything!
             pass
         return None
